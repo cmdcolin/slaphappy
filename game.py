@@ -1,7 +1,7 @@
 import pygame as pg
 import sys
 import math
-from hand import Player1, Player2, Bruise
+from hand import Player1, Player2, Bruise1, Bruise2
 
 
 pg.init()
@@ -14,14 +14,14 @@ GREEN = (0, 255, 0)
 display_width = 1600
 display_height = 1200
 
-screen = pg.display.set_mode((display_width, display_height))
+flags = pg.DOUBLEBUF
+screen = pg.display.set_mode((display_width, display_height), flags)
 pg.display.set_caption("BUTTCON2019")
 
 
 clock = pg.time.Clock()
-crashed = False
-butt = pg.image.load("butt4.png")
-background = pg.image.load("background.png")
+butt = pg.image.load("butt4.jpg")
+background = pg.image.load("background.jpg")
 
 
 all_sprites_list = pg.sprite.Group()
@@ -63,22 +63,24 @@ def draw_health(health, x, y):
     pg.draw.rect(screen, color, pg.Rect(x, y, width, 50))
 
 
-while not crashed:
+running = True
+win = None
+
+while running:
 
     deltaX1 = 0
     deltaY1 = 0
     deltaX2 = 0
     deltaY2 = 0
-    win = None
 
     if score1 > MAX_HEALTH:
         win = "PLAYER1 WINS"
     elif score2 > MAX_HEALTH:
         win = "PLAYER2 WINS"
-    else:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                crashed = True
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
+            running = False
+        if win is None:
             # handle p1
             if event.type == pg.KEYDOWN and event.key == pg.K_COMMA:
                 start_time1 = pg.time.get_ticks()
@@ -89,7 +91,7 @@ while not crashed:
                     poslog1[key] = poslog1.get(key, 0) + 5
                     score1 += (pg.time.get_ticks() - start_time1) / poslog1[key]
                     if player1_charging:
-                        bruise_sprites.add(Bruise(player1.rect.x, player1.rect.y))
+                        bruise_sprites.add(Bruise1(player1.rect.x, player1.rect.y))
                         player1_charging = 0
 
             # handle p2 in same way
@@ -103,42 +105,42 @@ while not crashed:
                     score2 += (pg.time.get_ticks() - start_time2) / poslog2[key]
                     start_time2 = 0
                     if player2_charging:
-                        bruise_sprites.add(Bruise(player2.rect.x, player2.rect.y))
+                        bruise_sprites.add(Bruise2(player2.rect.x, player2.rect.y))
                         player2_charging = 0
 
-        pressed = pg.key.get_pressed()
+    pressed = pg.key.get_pressed()
 
-        if pressed[pg.K_COMMA]:
-            if pg.time.get_ticks() - start_time1 > 300:
-                player1_charging = 1
+    if pressed[pg.K_COMMA]:
+        if pg.time.get_ticks() - start_time1 > 300:
+            player1_charging = 1
 
-        if pressed[pg.K_PERIOD]:
-            if pg.time.get_ticks() - start_time2 > 300:
-                player2_charging = 1
+    if pressed[pg.K_PERIOD]:
+        if pg.time.get_ticks() - start_time2 > 300:
+            player2_charging = 1
 
-        if pressed[pg.K_LEFT]:
-            deltaX1 = -50
-        if pressed[pg.K_RIGHT]:
-            deltaX1 = 50
-        if pressed[pg.K_UP]:
-            deltaY1 = -50
-        if pressed[pg.K_DOWN]:
-            deltaY1 = 50
-        if pressed[pg.K_a]:
-            deltaX2 = -50
-        if pressed[pg.K_d]:
-            deltaX2 = 50
-        if pressed[pg.K_w]:
-            deltaY2 = -50
-        if pressed[pg.K_s]:
-            deltaY2 = 50
+    if pressed[pg.K_LEFT]:
+        deltaX1 = -50
+    if pressed[pg.K_RIGHT]:
+        deltaX1 = 50
+    if pressed[pg.K_UP]:
+        deltaY1 = -50
+    if pressed[pg.K_DOWN]:
+        deltaY1 = 50
+    if pressed[pg.K_a]:
+        deltaX2 = -50
+    if pressed[pg.K_d]:
+        deltaX2 = 50
+    if pressed[pg.K_w]:
+        deltaY2 = -50
+    if pressed[pg.K_s]:
+        deltaY2 = 50
 
-        player1.update(slap1, deltaX1, deltaY1)
-        player2.update(slap2, deltaX2, deltaY2)
+    player1.update(slap1, deltaX1, deltaY1)
+    player2.update(slap2, deltaX2, deltaY2)
 
+    screen.blit(background, (0, 0))
     screen.blit(butt, (0, 0))
     bruise_sprites.draw(screen)
-    screen.blit(background, (0, 0))
     all_sprites_list.draw(screen)
     fps = font2.render(str(int(clock.get_fps())), True, WHITE)
     screen.blit(fps, (50, display_height - 30))
