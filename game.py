@@ -49,20 +49,20 @@ poslog2 = {}
 start_time1 = 0
 start_time2 = 0
 
-MAX_HEALTH = 5000
+MAX_HEALTH = 500
 
 
-def draw_health(health):
-    if health > 66:
+def draw_health(health, x, y):
+    print(health, x, y)
+    if health > MAX_HEALTH * 2 / 3:
         color = GREEN
-    elif health > 33:
+    elif health > MAX_HEALTH * 2 / 3:
         color = ORANGE
     else:
         color = RED
-    width = int(400 * health / MAX_HEALTH)
-    health_bar = pg.Rect(0, 0, width, 7)
-    if health < MAX_HEALTH:
-        pg.draw.rect(screen, color, health_bar)
+    width = min(int(400 * health / MAX_HEALTH), MAX_HEALTH)
+    pg.draw.rect(screen, BLACK, pg.Rect(x - 1, y - 1, 402, 52))
+    pg.draw.rect(screen, color, pg.Rect(x, y, width, 50))
 
 
 while not crashed:
@@ -84,25 +84,31 @@ while not crashed:
             start_time1 = pg.time.get_ticks()
         if event.type == pg.KEYUP and event.key == pg.K_COMMA:
             slap1 = 1
-            key = "{}_{}".format(player1.rect.x, player1.rect.y)
-            poslog1[key] = poslog1.get(key, 0) + 5
-            score1 += (pg.time.get_ticks() - start_time1) / poslog1[key]
-            if player1_charging:
-                bruise_sprites.add(Bruise(player1.rect.x, player1.rect.y))
-                player1_charging = 0
+            if player1.rect.y < 250:
+                print("wtf")
+            else:
+                key = "{}_{}".format(player1.rect.x, player1.rect.y)
+                poslog1[key] = poslog1.get(key, 0) + 5
+                score1 += (pg.time.get_ticks() - start_time1) / poslog1[key]
+                if player1_charging:
+                    bruise_sprites.add(Bruise(player1.rect.x, player1.rect.y))
+                    player1_charging = 0
 
         # handle p2 in same way
         if event.type == pg.KEYDOWN and event.key == pg.K_PERIOD:
             start_time2 = pg.time.get_ticks()
         if event.type == pg.KEYUP and event.key == pg.K_PERIOD:
             slap2 = 1
-            key = "{}_{}".format(player2.rect.x, player2.rect.y)
-            poslog2[key] = poslog2.get(key, 0) + 5
-            score2 += (pg.time.get_ticks() - start_time2) / poslog2[key]
-            start_time2 = 0
-            if player2_charging:
-                bruise_sprites.add(Bruise(player2.rect.x, player2.rect.y))
-                player2_charging = 0
+            if player2.rect.y < 250:
+                print("wtf")
+            else:
+                key = "{}_{}".format(player2.rect.x, player2.rect.y)
+                poslog2[key] = poslog2.get(key, 0) + 5
+                score2 += (pg.time.get_ticks() - start_time2) / poslog2[key]
+                start_time2 = 0
+                if player2_charging:
+                    bruise_sprites.add(Bruise(player2.rect.x, player2.rect.y))
+                    player2_charging = 0
 
     pressed = pg.key.get_pressed()
 
@@ -143,6 +149,8 @@ while not crashed:
         (display_width - font.size(str(math.floor(score2)))[0] - 50, 50),
     )
 
+    draw_health(score1, 50, 50)
+    draw_health(score2, display_width - 500, 50)
     pg.display.update()
     clock.tick(30)
     slap1 = 0
