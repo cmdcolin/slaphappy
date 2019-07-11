@@ -18,16 +18,13 @@ white = (255, 255, 255)
 clock = pygame.time.Clock()
 crashed = False
 butt = pygame.image.load("butt4.png")
+background = pygame.image.load("background.png")
 
 
 all_sprites_list = pygame.sprite.Group()
 
-player1 = Player1()
-player1.rect.x = display_width * 0.10
-player1.rect.y = display_height * 0.5
-player2 = Player2()
-player2.rect.x = display_width * 0.55
-player2.rect.y = display_height * 0.5
+player1 = Player1(display_width * 0.10, display_height * 0.5)
+player2 = Player2(display_width * 0.55, display_height * 0.5)
 
 # Add the car to the list of objects
 all_sprites_list.add(player1)
@@ -42,23 +39,38 @@ while not crashed:
             crashed = True
 
     screen.blit(butt, (0, 0))
-
     all_sprites_list.draw(screen)
+    screen.blit(background, (0, 0))
+
+    deltaX1 = 0
+    deltaY1 = 0
+    deltaX2 = 0
+    deltaY2 = 0
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-        elif event.type == KEYDOWN and event.key == K_COMMA:
+        if event.type == KEYDOWN and event.key == K_COMMA:
             p1slaps = 1
         elif event.type == KEYUP and event.key == K_COMMA:
             p1slaps = 0
-        elif event.type == KEYDOWN and event.key == K_PERIOD:
+        if event.type == KEYDOWN and event.key == K_PERIOD:
             p2slaps = -1
         elif event.type == KEYUP and event.key == K_PERIOD:
             p2slaps = 0
 
-    player1.update(p1slaps)
-    player2.update(p2slaps)
+    pressed = pygame.key.get_pressed()
+    if pressed[K_LEFT]:
+        deltaX1 = -100
+    if pressed[K_RIGHT]:
+        deltaX1 = 100
+    if pressed[K_UP]:
+        deltaY1 = -100
+    if pressed[K_DOWN]:
+        deltaY1 = 100
+
+    player1.update(p1slaps, deltaX1, deltaY1)
+    player2.update(p2slaps, deltaX2, deltaY2)
 
     pygame.display.update()
     clock.tick(60)
