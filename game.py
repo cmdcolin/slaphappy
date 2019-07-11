@@ -42,7 +42,7 @@ start_time1 = 0
 start_time2 = 0
 player1_charging = 0
 player2_charging = 0
-font = pg.font.Font(None, 120)
+font = pg.font.Font(None, 150)
 font2 = pg.font.Font(None, 30)
 poslog1 = {}
 poslog2 = {}
@@ -69,13 +69,12 @@ while not crashed:
     deltaY1 = 0
     deltaX2 = 0
     deltaY2 = 0
+    win = None
 
     if score1 > MAX_HEALTH:
-        fps = font.render("PLAYER1 WINS", True, WHITE)
-        screen.blit(fps, (50, display_height - 30))
+        win = "PLAYER1 WINS"
     elif score2 > MAX_HEALTH:
-        fps = font.render("PLAYER2 WINS", True, WHITE)
-        screen.blit(fps, (50, display_height - 30))
+        win = "PLAYER2 WINS"
     else:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -85,9 +84,7 @@ while not crashed:
                 start_time1 = pg.time.get_ticks()
             if event.type == pg.KEYUP and event.key == pg.K_COMMA:
                 slap1 = 1
-                if player1.rect.y < 250:
-                    print("wtf")
-                else:
+                if player1.rect.y > 250:
                     key = "{}_{}".format(player1.rect.x, player1.rect.y)
                     poslog1[key] = poslog1.get(key, 0) + 5
                     score1 += (pg.time.get_ticks() - start_time1) / poslog1[key]
@@ -100,9 +97,7 @@ while not crashed:
                 start_time2 = pg.time.get_ticks()
             if event.type == pg.KEYUP and event.key == pg.K_PERIOD:
                 slap2 = 1
-                if player2.rect.y < 250:
-                    print("wtf")
-                else:
+                if player2.rect.y > 250:
                     key = "{}_{}".format(player2.rect.x, player2.rect.y)
                     poslog2[key] = poslog2.get(key, 0) + 5
                     score2 += (pg.time.get_ticks() - start_time2) / poslog2[key]
@@ -111,35 +106,35 @@ while not crashed:
                         bruise_sprites.add(Bruise(player2.rect.x, player2.rect.y))
                         player2_charging = 0
 
-            pressed = pg.key.get_pressed()
+        pressed = pg.key.get_pressed()
 
-            if pressed[pg.K_COMMA]:
-                if pg.time.get_ticks() - start_time1 > 300:
-                    player1_charging = 1
+        if pressed[pg.K_COMMA]:
+            if pg.time.get_ticks() - start_time1 > 300:
+                player1_charging = 1
 
-            if pressed[pg.K_PERIOD]:
-                if pg.time.get_ticks() - start_time2 > 300:
-                    player2_charging = 1
+        if pressed[pg.K_PERIOD]:
+            if pg.time.get_ticks() - start_time2 > 300:
+                player2_charging = 1
 
-            if pressed[pg.K_LEFT]:
-                deltaX1 = -50
-            if pressed[pg.K_RIGHT]:
-                deltaX1 = 50
-            if pressed[pg.K_UP]:
-                deltaY1 = -50
-            if pressed[pg.K_DOWN]:
-                deltaY1 = 50
-            if pressed[pg.K_a]:
-                deltaX2 = -50
-            if pressed[pg.K_d]:
-                deltaX2 = 50
-            if pressed[pg.K_w]:
-                deltaY2 = -50
-            if pressed[pg.K_s]:
-                deltaY2 = 50
+        if pressed[pg.K_LEFT]:
+            deltaX1 = -50
+        if pressed[pg.K_RIGHT]:
+            deltaX1 = 50
+        if pressed[pg.K_UP]:
+            deltaY1 = -50
+        if pressed[pg.K_DOWN]:
+            deltaY1 = 50
+        if pressed[pg.K_a]:
+            deltaX2 = -50
+        if pressed[pg.K_d]:
+            deltaX2 = 50
+        if pressed[pg.K_w]:
+            deltaY2 = -50
+        if pressed[pg.K_s]:
+            deltaY2 = 50
 
-    player1.update(slap1, deltaX1, deltaY1)
-    player2.update(slap2, deltaX2, deltaY2)
+        player1.update(slap1, deltaX1, deltaY1)
+        player2.update(slap2, deltaX2, deltaY2)
 
     screen.blit(butt, (0, 0))
     bruise_sprites.draw(screen)
@@ -149,6 +144,12 @@ while not crashed:
     screen.blit(fps, (50, display_height - 30))
     draw_health(score1, 50, 50)
     draw_health(score2, display_width - 500, 50)
+    if win:
+        pg.draw.rect(
+            screen, BLACK, pg.Rect(0, display_height / 2 - 50, display_width, 100)
+        )
+        screen.blit(font2.render(win, True, WHITE), (400, display_height / 2))
+
     pg.display.update()
     clock.tick(30)
     slap1 = 0
