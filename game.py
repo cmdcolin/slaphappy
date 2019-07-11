@@ -1,5 +1,6 @@
-import pygame
+import pygame, sys
 from hand import Player1, Player2
+from pygame import *
 
 
 pygame.init()
@@ -32,6 +33,8 @@ player2.rect.y = display_height * 0.5
 all_sprites_list.add(player1)
 all_sprites_list.add(player2)
 
+p1slaps = 0
+p2slaps = 0
 
 while not crashed:
     for event in pygame.event.get():
@@ -39,9 +42,23 @@ while not crashed:
             crashed = True
 
     screen.blit(butt, (0, 0))
-    all_sprites_list.update()
 
     all_sprites_list.draw(screen)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+        elif event.type == KEYDOWN and event.key == K_COMMA:
+            p1slaps = 1
+        elif event.type == KEYUP and event.key == K_COMMA:
+            p1slaps = 0
+        elif event.type == KEYDOWN and event.key == K_PERIOD:
+            p2slaps = -1
+        elif event.type == KEYUP and event.key == K_PERIOD:
+            p2slaps = 0
+
+    player1.update(p1slaps)
+    player2.update(p2slaps)
 
     pygame.display.update()
     clock.tick(60)
