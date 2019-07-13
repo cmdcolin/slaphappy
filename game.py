@@ -1,7 +1,7 @@
 import pygame as pg
 import sys
 import math
-from hand import Player, Bruise
+from hand import Player, Bruise, Ouchie, Ooh
 
 
 pg.init()
@@ -20,7 +20,7 @@ pg.display.set_caption("BUTTCON2019")
 
 
 clock = pg.time.Clock()
-background = pg.image.load("butt4.jpg")
+background = pg.image.load("butt5.png")
 
 # sprites = pg.sprite.Group()
 sprites = pg.sprite.LayeredUpdates()
@@ -39,9 +39,10 @@ player_charging = 0
 font = pg.font.Font(None, 150)
 font2 = pg.font.Font(None, 30)
 poslog = {}
+super_smack = False
 
 
-MAX_SCORE = 500
+MAX_SCORE = 5000
 
 pg.joystick.init()
 joystick = pg.joystick.Joystick(0)
@@ -108,11 +109,11 @@ while running:
         hold_down_time = pg.time.get_ticks()
     if slap >= 2 and not pressed[pg.K_COMMA]:
         slap = 1
-        hold_down_time = 0
         start_time = pg.time.get_ticks()
     if slap == 2 and pressed[pg.K_COMMA] and pg.time.get_ticks() - hold_down_time > 500:
         slap = 3
         start_time = pg.time.get_ticks()
+        super_smack = True
     if (
         slap == 3
         and pressed[pg.K_COMMA]
@@ -121,8 +122,21 @@ while running:
         slap = 4
         start_time = pg.time.get_ticks()
     if slap == 1 and pg.time.get_ticks() - start_time > 10:
-        sprites.add(Bruise(player.rect.x, player.rect.y))
+        if super_smack:
+            sprites.add(Bruise(player.rect.x, player.rect.y))
+            super_smack = False
         slap = 0
+        if pg.time.get_ticks() - hold_down_time > 1000:
+            sprites.add(Ouchie(600, 50))
+        else:
+            score += pg.time.get_ticks() - hold_down_time
+            sprites.add(Ooh(200, 50))
+        hold_down_time = 0
+
+    for e in sprites:
+        if e.text:
+            if pg.time.get_ticks() - e.start > 500:
+                sprites.remove(e)
 
     if pressed[pg.K_LEFT]:
         deltaX = -50
@@ -160,7 +174,7 @@ while running:
         background, (50, display_height - 30), (50, display_height - 30, 100, 20)
     )
     screen.blit(fps, (50, display_height - 30))
-    # draw_health(score, 50, 50)
+    draw_health(score, 50, 50)
     if win:
         pg.draw.rect(
             screen, BLACK, pg.Rect(0, display_height / 2 - 50, display_width, 100)
