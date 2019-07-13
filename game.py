@@ -104,40 +104,6 @@ while running:
 
     pressed = pg.key.get_pressed()
 
-    if slap == 0 and pressed[pg.K_COMMA]:
-        slap = 2
-        hold_down_time = pg.time.get_ticks()
-    if slap >= 2 and not pressed[pg.K_COMMA]:
-        slap = 1
-        start_time = pg.time.get_ticks()
-    if slap == 2 and pressed[pg.K_COMMA] and pg.time.get_ticks() - hold_down_time > 500:
-        slap = 3
-        start_time = pg.time.get_ticks()
-        super_smack = True
-    if (
-        slap == 3
-        and pressed[pg.K_COMMA]
-        and pg.time.get_ticks() - hold_down_time > 1000
-    ):
-        slap = 4
-        start_time = pg.time.get_ticks()
-    if slap == 1 and pg.time.get_ticks() - start_time > 10:
-        if super_smack:
-            sprites.add(Bruise(player.rect.x, player.rect.y))
-            super_smack = False
-        slap = 0
-        if pg.time.get_ticks() - hold_down_time > 1000:
-            sprites.add(Ouchie(600, 50))
-        else:
-            score += pg.time.get_ticks() - hold_down_time
-            sprites.add(Ooh(200, 50))
-        hold_down_time = 0
-
-    for e in sprites:
-        if e.text:
-            if pg.time.get_ticks() - e.start > 500:
-                sprites.remove(e)
-
     if pressed[pg.K_LEFT]:
         deltaX = -50
     if pressed[pg.K_RIGHT]:
@@ -158,7 +124,38 @@ while running:
     joystick = pg.joystick.Joystick(0)
     deltaX += joystick.get_axis(0) * 50
     deltaY += joystick.get_axis(1) * 50
-    player_charging = joystick.get_button(14)
+    button_pressed = joystick.get_button(14)
+    mp = pressed[pg.K_COMMA] or button_pressed
+    if slap == 0 and mp:
+        slap = 2
+        hold_down_time = pg.time.get_ticks()
+    if slap >= 2 and not mp:
+        slap = 1
+        start_time = pg.time.get_ticks()
+    if slap == 2 and mp and pg.time.get_ticks() - hold_down_time > 500:
+        slap = 3
+        start_time = pg.time.get_ticks()
+        super_smack = True
+    if slap == 3 and mp and pg.time.get_ticks() - hold_down_time > 1000:
+        slap = 4
+        start_time = pg.time.get_ticks()
+    if slap == 1 and pg.time.get_ticks() - start_time > 10:
+        if super_smack:
+            sprites.add(Bruise(player.rect.x, player.rect.y))
+            super_smack = False
+        slap = 0
+        if pg.time.get_ticks() - hold_down_time > 1000:
+            sprites.add(Ouchie(600, 50))
+        else:
+            score += pg.time.get_ticks() - hold_down_time
+            sprites.add(Ooh(200, 50))
+        hold_down_time = 0
+
+    for e in sprites:
+        if e.text:
+            if pg.time.get_ticks() - e.start > 500:
+                sprites.remove(e)
+
     player.update(slap, deltaX, deltaY)
 
     # for s in bruise_sprites:
