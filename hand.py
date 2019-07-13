@@ -1,8 +1,9 @@
 import pygame
 
 
-class Player1(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
+        self._layer = 2
         super().__init__()
         self.images = [
             pygame.image.load("slap4.png").convert_alpha(),
@@ -20,29 +21,11 @@ class Player1(pygame.sprite.Sprite):
         self.rect.y += deltaY
 
 
-class Player2(Player1):
+class Bruise(pygame.sprite.Sprite):
     def __init__(self, x, y):
-        super().__init__(x, y)
-        self.images = list(
-            map(lambda x: pygame.transform.flip(x, True, False), self.images)
-        )
-        self.image = self.images[0]
-
-
-class Bruise1(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+        self._layer = 1
         super().__init__()
         self.image = pygame.image.load("bruise2.png").convert_alpha()
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
-
-class Bruise2(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
-        self.image = pygame.image.load("bruise2.png").convert_alpha()
-        self.image = pygame.transform.flip(self.image, True, False)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
