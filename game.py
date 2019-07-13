@@ -22,6 +22,7 @@ pg.display.set_caption("BUTTCON2019")
 clock = pg.time.Clock()
 background = pg.image.load("butt5.png")
 main_screen = pg.image.load("main-screen.png")
+instructions = pg.image.load("instructions.png")
 
 # sprites = pg.sprite.Group()
 sprites = pg.sprite.LayeredUpdates()
@@ -49,6 +50,9 @@ pg.joystick.init()
 joystick = pg.joystick.Joystick(0)
 joystick.init()
 
+effect = pg.mixer.Sound("claps.wav")
+effect2 = pg.mixer.Sound("clap1.wav")
+
 
 def draw_health(health, x, y):
     if health > MAX_SCORE * 2 / 3:
@@ -66,6 +70,7 @@ running = True
 win = False
 
 intro = True
+instruction_screen = False
 getting_started = False
 
 
@@ -111,8 +116,16 @@ while running:
             getting_started = True
         if getting_started and not mp:
             intro = False
-            reset()
+            instruction_screen = True
+            getting_started = False
 
+    elif instruction_screen:
+        screen.blit(instructions, (100, 100))
+        if mp:
+            getting_started = True
+        if getting_started and not mp:
+            instruction_screen = False
+            reset()
     else:
 
         if score > MAX_SCORE:
@@ -146,9 +159,11 @@ while running:
                 if pg.time.get_ticks() - hold_down_time > 1000:
                     sprites.add(Ouchie(600, 50))
                     score = 0
+                    effect2.play()
                 else:
                     score += pg.time.get_ticks() - hold_down_time
                     sprites.add(Ooh(200, 50))
+                    effect.play()
                 hold_down_time = 0
 
             for e in sprites:
