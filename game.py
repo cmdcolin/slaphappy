@@ -20,8 +20,7 @@ pg.display.set_caption("BUTTCON2019")
 
 
 clock = pg.time.Clock()
-butt = pg.image.load("butt4.jpg")
-background = pg.image.load("background.jpg")
+background = pg.image.load("butt4.jpg")
 
 
 all_sprites_list = pg.sprite.Group()
@@ -50,6 +49,9 @@ poslog2 = {}
 
 MAX_HEALTH = 500
 
+pg.joystick.init()
+joystick = pg.joystick.Joystick(0)
+
 
 def draw_health(health, x, y):
     if health > MAX_HEALTH * 2 / 3:
@@ -66,6 +68,7 @@ def draw_health(health, x, y):
 running = True
 win = None
 
+screen.blit(background, (0, 0))
 while running:
 
     deltaX1 = 0
@@ -135,13 +138,19 @@ while running:
     if pressed[pg.K_s]:
         deltaY2 = 50
 
-    player1.update(slap1, deltaX1, deltaY1)
-    player2.update(slap2, deltaX2, deltaY2)
+    joystick = pg.joystick.Joystick(0)
+    joystick.init()
+    deltaX1 = joystick.get_axis(0) * 50
+    deltaY1 = joystick.get_axis(1) * 50
+    player1_charging = joystick.get_button(14)
 
-    screen.blit(background, (0, 0))
-    screen.blit(butt, (0, 0))
+    for s in bruise_sprites:
+        screen.blit(background, s.rect, s.rect)
+    for s in all_sprites_list:
+        screen.blit(background, s.rect, s.rect)
     bruise_sprites.draw(screen)
     all_sprites_list.draw(screen)
+
     fps = font2.render(str(int(clock.get_fps())), True, WHITE)
     screen.blit(fps, (50, display_height - 30))
     draw_health(score1, 50, 50)
@@ -153,6 +162,9 @@ while running:
         screen.blit(font2.render(win, True, WHITE), (400, display_height / 2))
 
     pg.display.update()
+
+    player1.update(slap1, deltaX1, deltaY1)
+    player2.update(slap2, deltaX2, deltaY2)
     clock.tick(30)
     slap1 = 0
     slap2 = 0
