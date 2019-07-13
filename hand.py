@@ -8,7 +8,9 @@ class Player(pygame.sprite.Sprite):
         self.images = [
             pygame.image.load("slap4.png").convert_alpha(),
             pygame.image.load("unslap4.png").convert_alpha(),
-            pygame.image.load("chargeup.png").convert_alpha(),
+            pygame.image.load("slap5.png").convert_alpha(),
+            pygame.image.load("slap6.png").convert_alpha(),
+            pygame.image.load("slap7.png").convert_alpha(),
         ]
         self.image = self.images[0]
         self.rect = self.image.get_rect()

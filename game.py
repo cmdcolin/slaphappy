@@ -34,6 +34,7 @@ sprites.add(player)
 slap = 0
 score = 0
 start_time = 0
+hold_down_time = 0
 player_charging = 0
 font = pg.font.Font(None, 150)
 font2 = pg.font.Font(None, 30)
@@ -102,17 +103,26 @@ while running:
 
     pressed = pg.key.get_pressed()
 
-    if pressed[pg.K_COMMA]:
-        print("down")
+    if slap == 0 and pressed[pg.K_COMMA]:
+        slap = 2
+        hold_down_time = pg.time.get_ticks()
+    if slap >= 2 and not pressed[pg.K_COMMA]:
         slap = 1
-        player_charging = 1
-    if slap == 1 and not pressed[K_COMMA]:
-        print("up")
+        hold_down_time = 0
+        start_time = pg.time.get_ticks()
+    if slap == 2 and pressed[pg.K_COMMA] and pg.time.get_ticks() - hold_down_time > 500:
+        slap = 3
+        start_time = pg.time.get_ticks()
+    if (
+        slap == 3
+        and pressed[pg.K_COMMA]
+        and pg.time.get_ticks() - hold_down_time > 1000
+    ):
+        slap = 4
+        start_time = pg.time.get_ticks()
+    if slap == 1 and pg.time.get_ticks() - start_time > 10:
+        sprites.add(Bruise(player.rect.x, player.rect.y))
         slap = 0
-
-    # if pressed[pg.K_PERIOD]:
-    #     if pg.time.get_ticks() - start_time2 > 300:
-    #         player2_charging = 1
 
     if pressed[pg.K_LEFT]:
         deltaX = -50
@@ -161,7 +171,7 @@ while running:
     # pg.display.flip()
 
     clock.tick(30)
-    slap = 0
+    # slap = 0
 
 pg.quit()
 quit()
