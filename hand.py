@@ -8,11 +8,11 @@ class Player(pg.sprite.Sprite):
         self.start = pg.time.get_ticks()
         super().__init__()
         self.images = [
-            pg.image.load("slap4.png").convert_alpha(),
-            pg.image.load("unslap4.png").convert_alpha(),
-            pg.image.load("slap5.png").convert_alpha(),
-            pg.image.load("slap6.png").convert_alpha(),
-            pg.image.load("slap7.png").convert_alpha(),
+            pg.image.load("slap4.small.png").convert_alpha(),
+            pg.image.load("unslap4.small.png").convert_alpha(),
+            pg.image.load("slap5.small.png").convert_alpha(),
+            pg.image.load("slap6.small.png").convert_alpha(),
+            pg.image.load("slap7.small.png").convert_alpha(),
         ]
         self.image = self.images[0]
         self.rect = self.image.get_rect()
@@ -31,7 +31,7 @@ class Bruise(pg.sprite.Sprite):
         self._layer = 1
         self.start = pg.time.get_ticks()
         super().__init__()
-        self.image = pg.image.load("bruise3.png").convert_alpha()
+        self.image = pg.image.load("bruise3.small.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -43,7 +43,7 @@ class Ouchie(pg.sprite.Sprite):
         self.text = 1
         self.start = pg.time.get_ticks()
         super().__init__()
-        self.image = pg.image.load("ouchie.png").convert_alpha()
+        self.image = pg.image.load("ouchie.small.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -55,7 +55,7 @@ class Ooh(pg.sprite.Sprite):
         self.text = 1
         self.start = pg.time.get_ticks()
         super().__init__()
-        self.image = pg.image.load("ooh.png").convert_alpha()
+        self.image = pg.image.load("ooh.small.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -67,7 +67,7 @@ class Win(pg.sprite.Sprite):
         self.text = 1
         self.start = pg.time.get_ticks()
         super().__init__()
-        self.image = pg.image.load("winner.png").convert_alpha()
+        self.image = pg.image.load("winner.small.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -79,7 +79,7 @@ class Win2(pg.sprite.Sprite):
         self.text = 1
         self.start = pg.time.get_ticks()
         super().__init__()
-        self.image = pg.image.load("winner2.png").convert_alpha()
+        self.image = pg.image.load("winner2.small.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
