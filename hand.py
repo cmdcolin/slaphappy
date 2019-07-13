@@ -59,3 +59,27 @@ class Ooh(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+
+class Win(pg.sprite.Sprite):
+    def __init__(self, x, y):
+        self._layer = 3
+        self.text = 1
+        self.start = pg.time.get_ticks()
+        super().__init__()
+        self.image = pg.image.load("winner.png").convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+
+class Win2(pg.sprite.Sprite):
+    def __init__(self, x, y):
+        self._layer = 3
+        self.text = 1
+        self.start = pg.time.get_ticks()
+        super().__init__()
+        self.image = pg.image.load("winner2.png").convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y

@@ -1,7 +1,7 @@
 import pygame as pg
 import sys
 import math
-from hand import Player, Bruise, Ouchie, Ooh
+from hand import Player, Bruise, Ouchie, Ooh, Win, Win2
 
 
 pg.init()
@@ -21,6 +21,7 @@ pg.display.set_caption("BUTTCON2019")
 
 clock = pg.time.Clock()
 background = pg.image.load("butt5.png")
+main_screen = pg.image.load("main-screen.png")
 
 # sprites = pg.sprite.Group()
 sprites = pg.sprite.LayeredUpdates()
@@ -62,8 +63,7 @@ def draw_health(health, x, y):
 
 
 running = True
-win = None
-screen.blit(background, (0, 0))
+win = False
 
 intro = True
 getting_started = False
@@ -80,9 +80,8 @@ def reset():
     hold_down_time = 0
     player_charging = 0
     poslog = {}
+    screen.blit(background, (0, 0))
 
-
-reset()
 
 while running:
     deltaX = 0
@@ -107,8 +106,7 @@ while running:
             running = False
 
     if intro:
-        fps = font2.render(str(int(clock.get_fps())), True, WHITE)
-        screen.blit(fps, (50, display_height - 30))
+        screen.blit(main_screen, (0, 0))
         if mp:
             getting_started = True
         if getting_started and not mp:
@@ -118,60 +116,58 @@ while running:
     else:
 
         if score > MAX_SCORE:
-            win = "YOU WIN!!"
+            win = True
 
-        if slap == 0 and mp:
-            slap = 2
-            hold_down_time = pg.time.get_ticks()
-        if slap >= 2 and not mp:
-            slap = 1
-            start_time = pg.time.get_ticks()
-        if slap == 2 and mp and pg.time.get_ticks() - hold_down_time > 500:
-            slap = 3
-            start_time = pg.time.get_ticks()
-            super_smack = True
-        if slap == 3 and mp and pg.time.get_ticks() - hold_down_time > 1000:
-            slap = 4
-            start_time = pg.time.get_ticks()
-        if slap == 1 and pg.time.get_ticks() - start_time > 10:
-            if super_smack:
-                sprites.add(Bruise(player.rect.x, player.rect.y))
-                super_smack = False
-            slap = 0
-            if pg.time.get_ticks() - hold_down_time > 1000:
-                sprites.add(Ouchie(600, 50))
-            else:
-                score += pg.time.get_ticks() - hold_down_time
-                sprites.add(Ooh(200, 50))
-            hold_down_time = 0
-
-        for e in sprites:
-            if e.text:
-                if pg.time.get_ticks() - e.start > 500:
+            for e in sprites:
+                if e.text:
                     sprites.remove(e)
 
-        player.update(slap, deltaX, deltaY)
+            sprites.add(Win(200, 50))
+            sprites.add(Win2(900, 450))
+        elif not win:
+            if slap == 0 and mp:
+                slap = 2
+                hold_down_time = pg.time.get_ticks()
+            if slap >= 2 and not mp:
+                slap = 1
+                start_time = pg.time.get_ticks()
+            if slap == 2 and mp and pg.time.get_ticks() - hold_down_time > 500:
+                slap = 3
+                start_time = pg.time.get_ticks()
+                super_smack = True
+            if slap == 3 and mp and pg.time.get_ticks() - hold_down_time > 1000:
+                slap = 4
+                start_time = pg.time.get_ticks()
+            if slap == 1 and pg.time.get_ticks() - start_time > 10:
+                if super_smack:
+                    sprites.add(Bruise(player.rect.x, player.rect.y))
+                    super_smack = False
+                slap = 0
+                if pg.time.get_ticks() - hold_down_time > 1000:
+                    sprites.add(Ouchie(600, 50))
+                    score = 0
+                else:
+                    score += pg.time.get_ticks() - hold_down_time
+                    sprites.add(Ooh(200, 50))
+                hold_down_time = 0
+
+            for e in sprites:
+                if e.text:
+                    if pg.time.get_ticks() - e.start > 500:
+                        sprites.remove(e)
+
+            player.update(slap, deltaX, deltaY)
 
         ret = sprites.clear(screen, background)
         ret = sprites.draw(screen)
 
-        fps = font2.render(str(int(clock.get_fps())), True, WHITE)
-        screen.blit(
-            background, (50, display_height - 30), (50, display_height - 30, 100, 20)
-        )
-        screen.blit(fps, (50, display_height - 30))
         draw_health(score, 50, 50)
-        if win:
-            pg.draw.rect(
-                screen, BLACK, pg.Rect(0, display_height / 2 - 50, display_width, 100)
-            )
-            screen.blit(font2.render(win, True, WHITE), (400, display_height / 2))
 
-        pg.display.update()
-        # pg.display.flip()
+    pg.display.update()
+    # pg.display.flip()
 
-        clock.tick(30)
-        # slap = 0
+    clock.tick(30)
+    # slap = 0
 
 pg.quit()
 quit()
