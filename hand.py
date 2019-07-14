@@ -4,7 +4,6 @@ import pygame as pg
 class Player(pg.sprite.Sprite):
     def __init__(self, x, y):
         self._layer = 2
-        self.text = 0
         self.start = pg.time.get_ticks()
         super().__init__()
         self.images = [
@@ -27,8 +26,8 @@ class Player(pg.sprite.Sprite):
 
 class Bruise(pg.sprite.Sprite):
     def __init__(self, x, y):
-        self.text = 0
         self._layer = 1
+        self.bruise = 1
         self.start = pg.time.get_ticks()
         super().__init__()
         self.image = pg.image.load("bruise3.small.png").convert_alpha()
@@ -80,6 +79,19 @@ class Win2(pg.sprite.Sprite):
         self.start = pg.time.get_ticks()
         super().__init__()
         self.image = pg.image.load("winner2.small.png").convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+
+
+class Wtf(pg.sprite.Sprite):
+    def __init__(self, x, y):
+        self._layer = 3
+        self.text = 1
+        self.start = pg.time.get_ticks()
+        super().__init__()
+        self.image = pg.image.load("wtf.small.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y

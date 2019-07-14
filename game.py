@@ -1,7 +1,7 @@
 import pygame as pg
 import sys
 import math
-from hand import Player, Bruise, Ouchie, Ooh, Win, Win2
+from hand import Player, Bruise, Ouchie, Ooh, Win, Win2, Wtf
 
 
 pg.init()
@@ -10,7 +10,6 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 ORANGE= (255, 165, 0)
 YELLOW = (255, 255, 0)
-
 GREEN = (0, 255, 0)
 
 display_width = 400
@@ -153,10 +152,10 @@ while running:
                 intro = True
 
             for e in sprites:
-                if e.text:
+                if hasattr(e,'text'):
                     sprites.remove(e)
 
-            sprites.add(Win(display_width/10, display_height/16))
+            sprites.add(Win(display_width/10, display_height/4))
             sprites.add(Win2(display_width/2, display_height/2))
         elif not win:
             if slap == 0 and mp:
@@ -173,23 +172,35 @@ while running:
                 slap = 4
                 start_time = pg.time.get_ticks()
             if slap == 1 and pg.time.get_ticks() - start_time > 10:
-                if super_smack:
-                    sprites.add(Bruise(player.rect.x, player.rect.y))
-                    super_smack = False
                 slap = 0
-                if pg.time.get_ticks() - hold_down_time > 1000:
-                    sprites.add(Ouchie(display_width/2, display_height/16))
+                flag = True
+                if player.rect.y < 50:
+                    sprites.add(Wtf(display_width*.55, display_height*.2))
                     score = 0
                     effect2.play()
-                else:
-                    score += pg.time.get_ticks() - hold_down_time
-                    sprites.add(Ooh(display_width/4, display_height/16))
-                    effect.play()
+                    flag=False
+                elif super_smack:
+                    sprites.add(Bruise(player.rect.x, player.rect.y))
+                    super_smack = False
+                if flag:
+                    if pg.time.get_ticks() - hold_down_time > 1000:
+                        sprites.add(Ouchie(display_width/2, display_height/16))
+                        score = 0
+                        effect2.play()
+                    else:
+                        key = "{}_{}".format(player.rect.x,player.rect.y)
+                        poslog[key] = poslog.get(key,0)+1
+                        score += (pg.time.get_ticks() - hold_down_time)/poslog[key]
+                        sprites.add(Ooh(display_width/4, display_height/16))
+                        effect.play()
                 hold_down_time = 0
 
             for e in sprites:
-                if e.text:
+                if hasattr(e,'text'):
                     if pg.time.get_ticks() - e.start > 500:
+                        sprites.remove(e)
+                elif hasattr(e,'bruise'):
+                    if pg.time.get_ticks() - e.start > 5000:
                         sprites.remove(e)
 
             player.update(slap, deltaX, deltaY)
