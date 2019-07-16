@@ -22,9 +22,9 @@ pg.display.set_caption("BUTTCON2019")
 
 
 clock = pg.time.Clock()
-background = pg.image.load("butt5.small.png")
-main_screen = pg.image.load("main-screen.small.png")
-instructions = pg.image.load("instructions.small.png")
+background = pg.image.load("img/butt5.small.png")
+main_screen = pg.image.load("img/main-screen.small.png")
+instructions = pg.image.load("img/instructions.small.png")
 
 # sprites = pg.sprite.Group()
 sprites = pg.sprite.LayeredUpdates()
@@ -49,9 +49,12 @@ super_smack = False
 
 MAX_SCORE = 5000
 
-pg.joystick.init()
-joystick = pg.joystick.Joystick(0)
-joystick.init()
+joystick = None
+joystick_count = pg.joystick.get_count()
+if joystick_count:
+    pg.joystick.init()
+    joystick = pg.joystick.Joystick(0)
+    joystick.init()
 
 effect = pg.mixer.Sound("claps.wav")
 effect2 = pg.mixer.Sound("clap1.wav")
@@ -115,10 +118,12 @@ while running:
         deltaY = -delta
     if pressed[pg.K_DOWN]:
         deltaY = delta
+    button_pressed = False
+    if joystick:
+        deltaX += joystick.get_axis(0) * delta
+        deltaY += joystick.get_axis(1) * delta
+        button_pressed = joystick.get_button(14)
 
-    deltaX += joystick.get_axis(0) * delta
-    deltaY += joystick.get_axis(1) * delta
-    button_pressed = joystick.get_button(14)
     mp = pressed[pg.K_COMMA] or button_pressed
     for event in pg.event.get():
         if event.type == pg.QUIT:
