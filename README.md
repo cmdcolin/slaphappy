@@ -13,6 +13,7 @@ This is a game I made for buttcon2019, detroit MI. The game is installed into a 
 * July 11 - made initial game sketch
 * July 12 - did disassembly of machine
 * July 13 - finished game, installed into the machine
+* July 13 - came up with the name slap happy
 
 ## Disassembly
 
