@@ -25,12 +25,14 @@ Disassembling the old machine was actually pretty elaborate and took a couple ho
 
 After the old TV was removed, I added a piece of plywood on top of the frame that held the old TV up, and then a flat screen fit perfectly on top of the plywood and was actually the perfect height so that the original glass could sit on top of the flatscreen.
 
-Then reattaching new joystick required drilling new holes in the metal arcade front panel, but I only had an impact driver, so I had to the only drill bit that fit this which was really large so I also used massive washers when remounting it.
+Then reattaching new joystick required drilling new holes in the metal arcade front panel, but I only had an impact driver, so I had use the only drill bit that I had that fit an impact driver, which was pretty large. Therefore there are some pretty massive washers used when I remounted the joystick.
 
 ![](pics/2.jpg)
 
 
 ## Hardware
+
+The main requirements were:
 
 * Raspberry pi 2 running raspbian
 * New Joystick and buttons
